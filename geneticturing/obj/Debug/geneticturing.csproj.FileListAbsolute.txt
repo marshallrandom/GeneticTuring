@@ -1,0 +1,9 @@
+c:\users\mschm\documents\visual studio 2015\Projects\geneticturing\geneticturing\bin\Debug\geneticturing.exe.config
+c:\users\mschm\documents\visual studio 2015\Projects\geneticturing\geneticturing\bin\Debug\geneticturing.exe
+c:\users\mschm\documents\visual studio 2015\Projects\geneticturing\geneticturing\bin\Debug\geneticturing.pdb
+c:\users\mschm\documents\visual studio 2015\Projects\geneticturing\geneticturing\obj\Debug\geneticturing.Form1.resources
+c:\users\mschm\documents\visual studio 2015\Projects\geneticturing\geneticturing\obj\Debug\geneticturing.Properties.Resources.resources
+c:\users\mschm\documents\visual studio 2015\Projects\geneticturing\geneticturing\obj\Debug\geneticturing.csproj.GenerateResource.Cache
+c:\users\mschm\documents\visual studio 2015\Projects\geneticturing\geneticturing\obj\Debug\geneticturing.exe
+c:\users\mschm\documents\visual studio 2015\Projects\geneticturing\geneticturing\obj\Debug\geneticturing.pdb
+c:\users\mschm\documents\visual studio 2015\Projects\geneticturing\geneticturing\obj\Debug\geneticturing.csprojResolveAssemblyReference.cache
