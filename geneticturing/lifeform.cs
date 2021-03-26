@@ -35,20 +35,24 @@ namespace geneticturing
 
 
         public static Random _random = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
+        public static string reservedsymbols = " abcdefgABCDEFGHIJKLMORSTUV;,";
+        public static int default_start_energy = 1000;
+        public static int default_mutation_percent = 10;
+        public static int MAX_TURING_STEPS = 10000;
         public turing_machine turingmachine;
         public int maxstateid = 0;
         public int energy;
-        public string tapememory="";
-        public string reservedsymbols = " abcdefgABCDEFGHIJKLMORSTUV;,";
+        public string tapememory=""; 
         public int readerlocation;
         public int startlocation;
-        public List<string> longtermmemory_name;
-        public List<string> longtermmemory_value;
+        public List<string> longtermmemory_name = new List<string>();
+        public List<string> longtermmemory_value = new List<string>();
         public string directionfacing = "N";
         public int x_location;
         public int y_location;
         public string inputpending = "";
         public string outputpending = "";
+        public string customoutputpending = "";
         public int redvalue = 0;
         public int greenvalue = 0; 
         public int bluevalue = 0;
@@ -98,28 +102,26 @@ abcdefgABCDEFGHIJLMORSTUV;*/
         public lifeform(lifeform objectcopied)
         {
             turingmachine = new turing_machine(objectcopied.turingmachine);
-
-
-
             maxstateid = objectcopied.maxstateid;
             //energy = objectcopied.energy;
-            energy = 1000;
+            energy = default_start_energy;
             //tapememory = objectcopied.tapememory;
             tapememory = "";
-            reservedsymbols = objectcopied.reservedsymbols;
             readerlocation = objectcopied.readerlocation;
             startlocation = objectcopied.startlocation;
             ancestral_mutations = objectcopied.ancestral_mutations;
             redvalue = objectcopied.redvalue;
             bluevalue = objectcopied.bluevalue;
             greenvalue = objectcopied.greenvalue;
-            while (_random.Next(0, 100) <= 10)
+            while (_random.Next(1, 100) <= default_mutation_percent)
             {
                 mutate_turing_machine();
                 ancestral_mutations++;
                 redvalue = _random.Next(0, 255);
                 bluevalue = _random.Next(0, 255);
                 greenvalue = _random.Next(0, 255);
+                if (default_mutation_percent >= 100)
+                    break; //avoiding infinite loop here
             }
 
 
@@ -129,7 +131,7 @@ abcdefgABCDEFGHIJLMORSTUV;*/
         }
         public lifeform()
         {
-            energy = 1000;
+            energy = default_start_energy;
         }
         public void mutate_turing_machine()
         {
@@ -566,7 +568,8 @@ abcdefgABCDEFGHIJLMORSTUV;*/
             tempconnection.nextstate = tempstate.identifier;
             connection_state_adding_from = tempstate2.identifier;
             tempstate2.turingconnections.Add(tempconnection);
-            tempstate.connections_to_here.Add(connection_state_adding_from);
+            if (tempstate.connections_to_here.IndexOf(connection_state_adding_from) < 0)
+                tempstate.connections_to_here.Add(connection_state_adding_from);
 
 
         }
@@ -574,7 +577,7 @@ abcdefgABCDEFGHIJLMORSTUV;*/
         {
 
 
-    }
+        }
         public void modify_random_connection_direction()
         {
             turing_state tempstate;
@@ -661,12 +664,14 @@ abcdefgABCDEFGHIJLMORSTUV;*/
         {
             int which_connection = 0;
             int connection_state_to_remove = 0;
+            int totalconnectionstosamestate = 0;
             turing_state tempstate, tempstate2;
             which_connection = _random.Next(1, total_available_states_with_removable_connections()); //pick a random state that has connections to it that can be removed
             tempstate = return_state_to_remove_connection(which_connection); //returns the state to look at
             connection_state_to_remove = tempstate.identifier;
             which_connection = _random.Next(0, tempstate.connections_to_here.Count - 1); //pick a random parent connection number to remove
             tempstate2 = turingmachine.return_state(tempstate.connections_to_here[which_connection]); //grabbing the parent
+            totalconnectionstosamestate = 0;
             tempstate.connections_to_here.RemoveAt(which_connection); //removing parent connection reference
 
             
@@ -892,12 +897,17 @@ abcdefgABCDEFGHIJLMORSTUV;*/
             }
             return false;
         }
-        public void decode_to_turing_machine(string turingencode)
+        public bool decode_to_turing_machine(string turingencode)
         {
             string[] words = turingencode.Split(';');
             string[] statelist = words[0].Split(',');
             string[] finalstatelist = words[2].Split(',');
             string[] connectionlist = null;
+            if (statelist.Length <= 1)
+                return false;
+            if (words.Length <= 1)
+                return false;
+
             turing_state tempstate = null;
             turing_state_connection tempconnection = null;
             turingmachine = new turing_machine();
@@ -940,6 +950,8 @@ abcdefgABCDEFGHIJLMORSTUV;*/
                     tempconnection.direction = connectionlist[j+2];
                     tempconnection.nextstate = Convert.ToInt32(connectionlist[j+3]);
                     tempstate.turingconnections.Add(tempconnection);
+                    if (turingmachine.return_state(tempconnection.nextstate) == null) //validation check
+                        return false;
                    // connection_number++;
 
                 }
@@ -951,14 +963,15 @@ abcdefgABCDEFGHIJLMORSTUV;*/
             {
                 for (int j = 0; j < turingmachine.turingstates[i].turingconnections.Count; j++)
                 {
-                    turingmachine.return_state(turingmachine.turingstates[i].turingconnections[j].nextstate).connections_to_here.Add(turingmachine.turingstates[i].identifier);
 
+                    tempstate = turingmachine.return_state(turingmachine.turingstates[i].turingconnections[j].nextstate);
+                    tempstate.connections_to_here.Add(turingmachine.turingstates[i].identifier);
                 }
 
 
             }
 
-            // return returnmachine;
+            return true;
 
         }
 
@@ -979,7 +992,7 @@ abcdefgABCDEFGHIJLMORSTUV;*/
             bool maxstepsreached = false;
 
             turing_state tempstate = turingmachine.return_state(turingmachine.initialstate);
-            while (!finalstatereached && connectionfound && totalsteps <= 10000)
+            while (!finalstatereached && connectionfound && totalsteps <= MAX_TURING_STEPS)
             {
                 while (readerlocation >= tapememory.Length)
                     tapememory = tapememory + " ";
@@ -1071,10 +1084,9 @@ abcdefgABCDEFGHIJLMORSTUV;*/
                 {
                     if (turingmachine.turingstates[i].turingconnections.Count > 0)
                     {
-                        if (i < turingmachine.turingstates.Count - 1)
+
                             returnvalue += Convert.ToString(turingmachine.turingstates[i].identifier) + ",";
-                        else
-                            returnvalue += Convert.ToString(turingmachine.turingstates[i].identifier);
+
                         for (int j = 0; j < turingmachine.turingstates[i].turingconnections.Count; j++)
                         {
                             returnvalue += turingmachine.turingstates[i].turingconnections[j].readvalue.Replace(";", "s").Replace(",", "m") + "," +
@@ -1093,6 +1105,63 @@ abcdefgABCDEFGHIJLMORSTUV;*/
                 return returnvalue.Substring(0,returnvalue.Length-1);
 
         }
+        public string Data_Save()
+        {
+            string returnvalue = "";
+            returnvalue = returnvalue + "ENERGY=" + Convert.ToString(energy) + Environment.NewLine;
+            returnvalue = returnvalue + "TAPEMEMORY=" + tapememory + Environment.NewLine;
+            returnvalue = returnvalue + "READERLOCATION=" + Convert.ToString(readerlocation) + Environment.NewLine;
+            returnvalue = returnvalue + "STARTLOCATION=" + Convert.ToString(startlocation) + Environment.NewLine;
+            returnvalue = returnvalue + "MAXSTATEID = " + Convert.ToString(maxstateid) + Environment.NewLine;
+            if (longtermmemory_name != null)
+            {
+                returnvalue = returnvalue + "TOTALLONGTERMMEMORY=" + Convert.ToString(longtermmemory_name.Count()) + Environment.NewLine;
+                for (int i = 0; i < longtermmemory_name.Count; i++)
+                {
+                    returnvalue = returnvalue + "LONGTERMMEMORYNAME=" + longtermmemory_name[i] + Environment.NewLine;
+                    returnvalue = returnvalue + "LONGTERMMEMORYVALUE=" + longtermmemory_value[i] + Environment.NewLine;
+
+                }
+            }
+            else
+                returnvalue = returnvalue + "TOTALLONGTERMMEMORY=0" + Environment.NewLine;
+            returnvalue = returnvalue + "DIRECTIONFACING=" + directionfacing + Environment.NewLine;
+            returnvalue = returnvalue + "XLOCATION=" + Convert.ToString(x_location) + Environment.NewLine;
+            returnvalue = returnvalue + "YLOCATION=" + Convert.ToString(y_location) + Environment.NewLine;
+            returnvalue = returnvalue + "INPUTPENDING=" + inputpending + Environment.NewLine;
+            returnvalue = returnvalue + "OUTPUTPENDING=" + outputpending + Environment.NewLine;
+            returnvalue = returnvalue + "REDVALUE=" + Convert.ToString(redvalue) + Environment.NewLine;
+            returnvalue = returnvalue + "GREENVALUE=" + Convert.ToString(greenvalue) + Environment.NewLine;
+            returnvalue = returnvalue + "BLUEVALUE=" + Convert.ToString(bluevalue) + Environment.NewLine;
+            returnvalue = returnvalue + "LASTINPUT=" + lastinput + Environment.NewLine;
+            returnvalue = returnvalue + "LASTOUTPUT=" + lastoutput + Environment.NewLine;
+            returnvalue = returnvalue + "LASTMUTATION=" + lastmutation + Environment.NewLine;
+            returnvalue = returnvalue + "ANCESTRAL_MUTATIONS=" + Convert.ToString(ancestral_mutations) + Environment.NewLine; ;
+            returnvalue = returnvalue + turingmachine.Data_Save();
+            return returnvalue;
+            
+
+            /*
+public int energy;
+public string tapememory=""; 
+public int readerlocation;
+public int startlocation;
+public List<string> longtermmemory_name;
+public List<string> longtermmemory_value;
+public string directionfacing = "N";
+public int x_location;
+public int y_location;
+public string inputpending = "";
+public string outputpending = "";
+public int redvalue = 0;
+public int greenvalue = 0; 
+public int bluevalue = 0;
+public string lastinput = "";
+public string lastoutput = "";
+public string lastmutation = "";
+public int ancestral_mutations = 0;*/
+
+        }
     }
     public class turing_state
     {
@@ -1101,6 +1170,41 @@ abcdefgABCDEFGHIJLMORSTUV;*/
         public bool finalstate = false;
         public List<int> connections_to_here;
         public List<turing_state_connection> turingconnections;
+        public string Data_Save()
+        {
+            string returnvalue = "";
+            returnvalue = returnvalue + "IDENTIFIER=" + Convert.ToString(identifier) + Environment.NewLine;
+            if (finalstate)
+                returnvalue = returnvalue + "ISFINALSTATE=TRUE" + Environment.NewLine;
+            else
+                returnvalue = returnvalue + "ISFINALSTATE=FALSE" + Environment.NewLine;
+            if (connections_to_here != null)
+            {
+                returnvalue = returnvalue + "TOTALCONNECTIONSTOSTATE=" + Convert.ToString(connections_to_here.Count()) + Environment.NewLine;
+                for (int i = 0; i < connections_to_here.Count(); i++)
+                {
+
+                    returnvalue = returnvalue + "CONNECTIONS_TO_HERE=" + Convert.ToString(connections_to_here[i]) + Environment.NewLine;
+                }
+            }
+            else
+                returnvalue = returnvalue + "TOTALCONNECTIONSTOSTATE=0" + Environment.NewLine;
+            if (turingconnections != null)
+            {
+                returnvalue = returnvalue + "TOTALCONNECTIONSFROMSTATE=" + Convert.ToString(turingconnections.Count()) + Environment.NewLine;
+                for (int i = 0; i < turingconnections.Count; i++)
+                {
+                    returnvalue = returnvalue + "CONNECTIONINFO=" + turingconnections[i].readvalue.Replace(";", "s").Replace(",", "m") + "," + turingconnections[i].writevalue.Replace(";", "s").Replace(",", "m") + "," + turingconnections[i].direction + "," + Convert.ToString(turingconnections[i].nextstate) + Environment.NewLine;
+
+                }
+            }
+            else
+                returnvalue = returnvalue + "TOTALCONNECTIONSFROMSTATE=0" + Environment.NewLine;
+            return returnvalue;
+
+
+
+        }
         public turing_state(int namehere)
         {
             identifier = namehere;
@@ -1163,6 +1267,38 @@ abcdefgABCDEFGHIJLMORSTUV;*/
 
             }
             return null;
+        }
+        public string Data_Save()
+        {
+            /*
+                    public int maxstateid = 0;
+        public int energy;
+        public string tapememory=""; 
+        public int readerlocation;
+        public int startlocation;
+        public List<string> longtermmemory_name;
+        public List<string> longtermmemory_value;
+        public string directionfacing = "N";
+        public int x_location;
+        public int y_location;
+        public string inputpending = "";
+        public string outputpending = "";
+        public int redvalue = 0;
+        public int greenvalue = 0; 
+        public int bluevalue = 0;
+        public string lastinput = "";
+        public string lastoutput = "";
+        public string lastmutation = "";
+        public int ancestral_mutations = 0;*/
+            string returnvalue = "";
+            returnvalue = "INITIALSTATE=" + Convert.ToString(initialstate) + Environment.NewLine;
+            returnvalue = returnvalue + "TOTALSTATES=" + turingstates.Count() + Environment.NewLine;
+            for (int i = 0; i < turingstates.Count(); i++)
+            {
+                returnvalue = returnvalue + turingstates[i].Data_Save();
+            }
+            return returnvalue;
+
         }
         public turing_machine(turing_machine objectcopied)
         {

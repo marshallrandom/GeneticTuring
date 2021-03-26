@@ -8,6 +8,7 @@ namespace geneticturing
 {
     public class food
     {
-        public int amount = 1000;
+        public static int default_food_amount = 1000;
+        public int amount = default_food_amount;
     }
 }

@@ -8,7 +8,7 @@ namespace geneticturing
 {
     public class globalmemoryobject
     {
-        public static List<string> globalmemory_name;
-        public static List<string> globalmemory_value;
+        public static List<string> globalmemory_name = new List<string>();
+        public static List<string> globalmemory_value = new List<string>();
     }
 }
