@@ -24,6 +24,11 @@ namespace geneticturing
         int populationcontrolmax = 1000;
         int max_total_food = 200;
         int default_eat_amount = 50;
+        bool autosaveon = false;
+        string autosave_file = "";
+        double autosave_interval = 0;
+        double autosave_interval_counter = 0;
+
         double time_elapsed = 0;
         double[] movetotals = new double[256];
         public Form1()
@@ -48,41 +53,11 @@ namespace geneticturing
                 dataGridView1.Columns[i].Width = cellsize;
             for (int i = 0; i < dataGridView1.RowCount; i++)
                 dataGridView1.Rows[i].Height = cellsize;
-            //Random _random = new Random();
+
 
             dataGridView1.ColumnHeadersVisible = false;
             dataGridView1.RowHeadersVisible = false;
-            //Color temp = new Color();
 
-            /*   for (int x = 0; x < 100; x++)
-               {
-                   for (int y = 0; y < 100; y++)
-                   {
-                       //dataGridView1.Rows[y].Cells[x].Style.BackColor = Color.FromArgb(255, _random.Next(0, 255), _random.Next(0, 255), _random.Next(0, 255));
-                       dataGridView1.Rows[y].Cells[x].Style.BackColor = Color.FromArgb(255, 255, 255, 255);
-                       dataGridView1.Rows[y].Cells[x].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                      // dataGridView1.Rows[y].Cells[x].Value = "A";
-                       /* if (y % 2 == 0)
-                       {
-                           if (x % 2 == 0)
-                               dataGridView1.Rows[y].Cells[x].Style.BackColor = Color.FromArgb(255,0,0,0);
-                           else
-                               dataGridView1.Rows[y].Cells[x].Style.BackColor = Color.FromArgb(255, 255, 255, 255);
-                       }
-                       else
-                       {
-                           if (x % 2 == 1)
-                               dataGridView1.Rows[y].Cells[x].Style.BackColor = Color.FromArgb(255, 0, 0, 0);
-                           else
-                               dataGridView1.Rows[y].Cells[x].Style.BackColor = Color.FromArgb(255, 255, 255, 255);
-
-                       } */
-            /*             }
-                     }*/
-
-
-            //return; */
-            //string returnvalue = "";
             lifeform stuff = new lifeform();
             theworld.gridobjects[48, 50] = stuff;
             stuff.x_location = 48;
@@ -92,10 +67,7 @@ namespace geneticturing
             lifeformlist.Add(stuff);
             theworld.gridobjects[48, 49] = stuff2;
             totalfood++;
-            //stuff.decode_to_turing_machine("0,1,2,3,4,5,6,7,8;0;8;0,B,B,R,0,A,M,R,1;1,A,A,R,2;2,A,R,R,3;3,A,S,R,4;4,A,H,R,5;5,A,A,R,6;6,A,L,R,7;7,A,L,R,8");
-            //stuff.decode_to_turing_machine("12,11,10,9,0,1,2,3,4,5,6,7,8;0;8,11;0,B,B,R,0,A,M,R,1,C,B,L,0, ,Y,L,9;1,A,A,R,2;2,A,R,R,3;3,A,S,R,4;4,A,H,R,5;5,A,A,R,6, , ,L,12;6,A,L,R,7;7,A,L,R,8, , ,L,12;9, ,E,L,10;10,a,H,L,11, , ,L,12");
             stuff.decode_to_turing_machine("0,1,2,3,4,5,6;0;5,6;0,F,F,R,4, , ,L,2;1, ,E,S,6;2,d, ,R,3, ,a,R,1,a,b,R,1,b,c,R,1,c,d,R,1;3, ,L,S,6;4, ,A,S,5,s,A,S,5,F,F,S,5");
-            // stuff.decode_to_turing_machine("0,1,2,3,4,5,6,10,12,13,14,21,23,24,26,28,30,31,33,34,35,36,39,40,41,42,44,45,46,47,48,49,50,51,52,54,55,57,58,60,62,67,69,70,72,73,74,76,77,78,79,81,82,84,85,86,87,89,90,91,92,93,95,97,98,99,100,101,102,103,104,105,106,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,127,128,129,130,131,132,133,134,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159;0;5,6,10,12,13,14,21,23,26,28,30,31,33,34,35,36,39,40,41,42,44,45,46,47,48,49,50,51,52,54,55,57,58,60,62,67,69,70,72,73,74,76,77,78,79,81,82,84,85,86,87,89,90,91,92,93,95,97,98,99,100,101,102,103,104,106,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,127,128,129,130,131,132,133,134,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159;0,F,g,R,4, , ,L,2, ,I,L,14,T,f,R,23,G,K,R,26,e,f,L,28,B,s,L,33,T,s,R,52,S,M,R,54,R,D,R,55,F,d,L,70,a,b,R,74,S,c,R,76,F,b,R,90,L,C,L,91,K,A,L,98,R,a,L,111,f,F,R,121,b,b,L,130;1, ,F,S,6,M,K,R,10,B,d,R,13,g,f,R,24,U,E,R,31,d,F,L,47,I,U,L,57,V,s,R,67,g,g,R,72,D,A,L,73,O,e,L,77,R,E,L,81,A,d,L,84,F,f,R,85,a,H,R,86,e,f,R,92,E,s,R,93,b,B,R,97,O,V,R,102,L,K,R,103,J,R,R,106,H, ,R,110,S,G,R,129,T,b,R,131,d,C,R,132,c,S,R,151,f,A,L,152;2,a, ,R,3, ,a,R,1,a,b,R,1,S,c,R,1,c,d,R,1,e,B,L,12,S,a,L,21,E,M,L,41,G,g,R,44,b, ,L,45,V,J,R,69,K,g,L,87,e,L,R,89,L,O,L,99,e,b,L,105,L,V,R,113,I,H,L,123,g,s,R,128,D,V,L,137,B,e,L,139,E,A,L,140,A,B,R,142,M,d,L,143,d,b,R,144,F,G,L,145,O,g,L,153,C,D,L,156;3, ,L,S,6,D,E,L,30,s,s,R,35,d,I,L,39,A,H,L,40,e,a,R,42,g,F,L,48,E,a,L,49,O,U,R,50,L,s,L,51,s,C,L,60,E,g,L,78,D,M,L,82,b,C,L,95,J,c,R,100,a,g,R,101,B,c,R,104,E,L,R,109,J,b,R,114,d,g,R,115,A,E,R,118,C,A,L,134,G,g,R,141,c,A,R,148,F,K,L,155;4, ,A,S,5,s,A,S,5,F,F,S,5,e,K,R,34,H, ,R,36,U,H,L,46,S,A,R,58,g,V,R,62,C,J,L,79,f,C,L,112,D,c,L,116,T,T,R,117,B, ,L,122,c,c,R,127,A,s,R,133,K,f,R,136,a,V,R,138,G,a,R,150,O,E,R,157,R,K,L,158;24,s,U,R,119,B,d,R,120,d,J,R,124,F, ,R,147,c,G,R,149,S,E,L,154,T,I,L,159;105,e,H,R,146");
             for (int x = 0; x < dataGridView1.ColumnCount; x++)
             {
                 for (int y = 0; y < dataGridView1.RowCount; y++)
@@ -274,10 +246,90 @@ namespace geneticturing
             }
 
         }
+        private void Determine_Lifeform_Output(lifeform lifeforminstance)
+        {
+            gridcoordinates tempgridcoordinate = null, tempgridcoordinate2 = null;
+            lifeform templifeform = null;
 
+
+            templifeform = lifeforminstance;
+            tempgridcoordinate = new gridcoordinates(lifeforminstance.x_location, lifeforminstance.y_location);
+            templifeform.outputpending = "";
+            //templifeform.
+            for (int j = 1; j < detectionlevel + 1; j++) //closer things will come first
+            {
+                tempgridcoordinate2 = tempgridcoordinate.translate_coordinates(tempgridcoordinate, j, lifeforminstance.directionfacing, "F", theworld.gridobjects.GetUpperBound(0), theworld.gridobjects.GetUpperBound(1));
+                if (theworld.gridobjects[tempgridcoordinate2.x, tempgridcoordinate2.y] is food)
+                {
+                    for (int k = 0; k < j; k++)
+                    {
+
+                        templifeform.inputpending = templifeform.inputpending + "F";
+                    }
+                    templifeform.inputpending = templifeform.inputpending + ";";
+
+
+                }
+                else if (theworld.gridobjects[tempgridcoordinate2.x, tempgridcoordinate2.y] is lifeform)
+                {
+                    for (int k = 0; k < j; k++)
+                    {
+
+                        templifeform.inputpending = templifeform.inputpending + "U";
+                    }
+                    templifeform.inputpending = templifeform.inputpending + ";";
+
+                }
+                else if (theworld.gridobjects[tempgridcoordinate2.x, tempgridcoordinate2.y] is globalmemoryobject)
+                {
+                    for (int k = 0; k < j; k++)
+                    {
+
+                        templifeform.inputpending = templifeform.inputpending + "H";
+                    }
+                    templifeform.inputpending = templifeform.inputpending + ";";
+
+                }
+                else if (theworld.gridobjects[tempgridcoordinate2.x, tempgridcoordinate2.y] is stoneobject)
+                {
+                    for (int k = 0; k < j; k++)
+                    {
+
+                        templifeform.inputpending = templifeform.inputpending + "O";
+                    }
+                    templifeform.inputpending = templifeform.inputpending + ";";
+
+                }
+            }
+            templifeform.lastinput = templifeform.inputpending;
+            if (templifeform.customoutputpending.Equals(""))
+                templifeform.outputpending = templifeform.evaluate_turing(templifeform.inputpending);  //evaluate the input
+            else
+            {
+                templifeform.outputpending = templifeform.customoutputpending;
+                templifeform.customoutputpending = "";
+            }
+
+            templifeform.lastoutput = templifeform.outputpending;
+            templifeform.inputpending = "";  //done with the input, clearing it out for the next tick
+
+
+        }
         private void evaluate_world()
         {
             time_elapsed++;
+            if (autosaveon && (autosave_file != "") && (autosave_interval >= 10000))
+            {
+                if (autosave_interval_counter >= autosave_interval)
+                {
+                    autosave_interval_counter = 1;
+                    SaveWorld(autosave_file.Replace(".", Convert.ToString(time_elapsed) + "."));
+
+                }
+                else
+                    autosave_interval_counter++;
+
+            }
             lifeform templifeform = null, templifeform2 = null;
             gridcoordinates tempgridcoordinate = null, tempgridcoordinate2 = null, tempgridcoordinate3 = null;
             food tempfood = null;
@@ -287,73 +339,15 @@ namespace geneticturing
             int numberofkids = 0;
             string firstparameter = "", secondparameter = "";
             Random _random = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
+            Parallel.ForEach(lifeformlist, lifeforminstance => {
+                Determine_Lifeform_Output(lifeforminstance);
 
-            for (int i = 0; i < lifeformlist.Count; i++)
+        });
+
+              for (int i = 0; i < lifeformlist.Count; i++)
+           // Parallel.ForEach(lifeformlist, lifeforminstance =>
             {
-                templifeform = lifeformlist[i];
-                tempgridcoordinate = new gridcoordinates(lifeformlist[i].x_location, lifeformlist[i].y_location);
-                templifeform.outputpending = "";
-                //templifeform.
-                for (int j = 1; j < detectionlevel + 1; j++) //closer things will come first
-                {
-                    tempgridcoordinate2 = tempgridcoordinate.translate_coordinates(tempgridcoordinate, j, lifeformlist[i].directionfacing, "F", theworld.gridobjects.GetUpperBound(0), theworld.gridobjects.GetUpperBound(1));
-                    if (theworld.gridobjects[tempgridcoordinate2.x, tempgridcoordinate2.y] is food)
-                    {
-                        for (int k = 0; k < j; k++)
-                        {
 
-                            templifeform.inputpending = templifeform.inputpending + "F";
-                        }
-                        templifeform.inputpending = templifeform.inputpending + ";";
-
-
-                    }
-                    else if (theworld.gridobjects[tempgridcoordinate2.x, tempgridcoordinate2.y] is lifeform)
-                    {
-                        for (int k = 0; k < j; k++)
-                        {
-
-                            templifeform.inputpending = templifeform.inputpending + "U";
-                        }
-                        templifeform.inputpending = templifeform.inputpending + ";";
-
-                    }
-                    else if (theworld.gridobjects[tempgridcoordinate2.x, tempgridcoordinate2.y] is globalmemoryobject)
-                    {
-                        for (int k = 0; k < j; k++)
-                        {
-
-                            templifeform.inputpending = templifeform.inputpending + "H";
-                        }
-                        templifeform.inputpending = templifeform.inputpending + ";";
-
-                    }
-                    else if (theworld.gridobjects[tempgridcoordinate2.x, tempgridcoordinate2.y] is stoneobject)
-                    {
-                        for (int k = 0; k < j; k++)
-                        {
-
-                            templifeform.inputpending = templifeform.inputpending + "O";
-                        }
-                        templifeform.inputpending = templifeform.inputpending + ";";
-
-                    }
-                }
-                templifeform.lastinput = templifeform.inputpending;
-                if (templifeform.customoutputpending.Equals(""))
-                    templifeform.outputpending = templifeform.evaluate_turing(templifeform.inputpending);  //evaluate the input
-                else
-                {
-                    templifeform.outputpending = templifeform.customoutputpending;
-                    templifeform.customoutputpending = "";
-                }
-
-                templifeform.lastoutput = templifeform.outputpending;
-                templifeform.inputpending = "";  //done with the input, clearing it out for the next tick
-
-            }
-            for (int i = 0; i < lifeformlist.Count; i++)
-            {
                 templifeform = lifeformlist[i];
                 tempgridcoordinate = new gridcoordinates(lifeformlist[i].x_location, lifeformlist[i].y_location);
                 if (templifeform.outputpending.Length >= 1)
@@ -564,12 +558,12 @@ namespace geneticturing
                                 theworld.gridobjects[tempgridcoordinate3.x, tempgridcoordinate3.y] = null;  //clear out space behind since it's empty now
                                 templifeform.energy -= 4;
                             }
-                            else if  (theworld.gridobjects[tempgridcoordinate3.x, tempgridcoordinate3.y] is stoneobject)
+                            else if (theworld.gridobjects[tempgridcoordinate3.x, tempgridcoordinate3.y] is stoneobject)
                             {
                                 ((stoneobject)theworld.gridobjects[tempgridcoordinate3.x, tempgridcoordinate3.y]).movecounter = (((stoneobject)theworld.gridobjects[tempgridcoordinate3.x, tempgridcoordinate3.y]).movecounter + 1) % (((stoneobject)theworld.gridobjects[tempgridcoordinate3.x, tempgridcoordinate3.y]).stoneweight);
 
-                            } 
-                            else                                
+                            }
+                            else
                                 templifeform.energy -= 2;
 
 
@@ -805,7 +799,9 @@ namespace geneticturing
 
 
             }
-            for (int i = 0; i < lifeformlist.Count; i++)
+             for (int i = 0; i < lifeformlist.Count; i++)
+           // Parallel.ForEach(lifeformlist, (lifeforminstance, pls, indexy) =>
+            
             {
                 templifeform = lifeformlist[i];
                 tempgridcoordinate = new gridcoordinates(lifeformlist[i].x_location, lifeformlist[i].y_location);
@@ -832,9 +828,26 @@ namespace geneticturing
 
         private void button4_Click(object sender, EventArgs e)
         {
+            string temptest = "";
+            string timeshere = Convert.ToString(DateTime.Now);
+            int maxmutations = 0;
+          /*  while (true) endless mutation test
+            {
+                lifeformlist[0].mutate_turing_machine();
+                temptest = lifeformlist[0].encode_turing_machine();
+                
+            } */
             for (int i = 0; i < Convert.ToInt32(textBox1.Text); i++)
+            {
                 evaluate_world();
-            // textBox1.Text = "10";
+
+            }
+            for (int i = 0; i < lifeformlist.Count; i++)
+            {
+                if (lifeformlist[i].ancestral_mutations > maxmutations)
+                    maxmutations = lifeformlist[i].ancestral_mutations;
+            }
+            this.Text = "Genetic Turing - " + Convert.ToString(time_elapsed) + " max mutations - " + Convert.ToString(maxmutations);
             RefreshWorld();
         }
 
@@ -846,15 +859,32 @@ namespace geneticturing
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             int max_ancestral = 0;
+            int number_of_states = 0;
+            int number_of_finalstates = 0;
+            int number_of_connections = 0;
             Object tempobject = theworld.gridobjects[e.ColumnIndex, e.RowIndex];
             if (tempobject is lifeform)
             {
+                for (int i = 0; i < ((lifeform)tempobject).turingmachine.turingstates.Count; i++)
+                {
+                    number_of_states++;
+                    if (((lifeform)tempobject).turingmachine.turingstates[i].finalstate)
+                        number_of_finalstates++;
+                    if ( ((lifeform)tempobject).turingmachine.turingstates[i].turingconnections != null)
+                    {
+                        number_of_connections += ((lifeform)tempobject).turingmachine.turingstates[i].turingconnections.Count;
+                    }
+                }
                 squareinfo.Text = "Energy: " + Convert.ToString(((lifeform)tempobject).energy) +
                     Environment.NewLine + "Direction: " + ((lifeform)tempobject).directionfacing +
                     Environment.NewLine + "Last Input: " + ((lifeform)tempobject).lastinput +
                     Environment.NewLine + "Last Output: " + ((lifeform)tempobject).lastoutput +
                     Environment.NewLine + "Last Mutation: " + ((lifeform)tempobject).lastmutation +
                     Environment.NewLine + "World Time Elapsed: " + Convert.ToString(time_elapsed);
+
+                squareinfo.Text = squareinfo.Text + Environment.NewLine + "Number of Turing States: " + Convert.ToString(number_of_states);
+                squareinfo.Text = squareinfo.Text + Environment.NewLine + "Number of Final States: " + Convert.ToString(number_of_finalstates);
+                squareinfo.Text = squareinfo.Text + Environment.NewLine + "Number of Connections: " + Convert.ToString(number_of_connections);
                 for (int i = 0; i < lifeformlist.Count; i++)
                 {
                     if (((lifeform)lifeformlist[i]).ancestral_mutations > max_ancestral)
@@ -875,10 +905,6 @@ namespace geneticturing
 
                 }
 
-
-
-
-                label1.Text = ((lifeform)tempobject).encode_turing_machine();
             }
             else if (tempobject is food)
             {
@@ -983,34 +1009,19 @@ namespace geneticturing
             else
                 return "Nothing";
         }
-
-        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        private void SaveWorld(string filenamehere = "")
         {
-            string filename = "";
-            saveFileDialog1.Filter = "World State (*.worldstate)|*.worldstate";
-            saveFileDialog1.ShowDialog();
-            filename = saveFileDialog1.FileName;
+            string filename = filenamehere;
+
+            if (filenamehere == "")
+            {
+                saveFileDialog1.Filter = "World State (*.worldstate)|*.worldstate";
+                saveFileDialog1.ShowDialog();
+                filename = saveFileDialog1.FileName;
+
+            }
             StreamWriter writer = new StreamWriter(filename);
-            /*
-                    public int maxstateid = 0;
-        public int energy;
-        public string tapememory=""; 
-        public int readerlocation;
-        public int startlocation;
-        public List<string> longtermmemory_name;
-        public List<string> longtermmemory_value;
-        public string directionfacing = "N";
-        public int x_location;
-        public int y_location;
-        public string inputpending = "";
-        public string outputpending = "";
-        public int redvalue = 0;
-        public int greenvalue = 0; 
-        public int bluevalue = 0;
-        public string lastinput = "";
-        public string lastoutput = "";
-        public string lastmutation = "";
-        public int ancestral_mutations = 0;*/
+
             writer.WriteLine("GRIDROWCOUNT=" + Convert.ToString(dataGridView1.RowCount));
             writer.WriteLine("GRIDCOLUMNCOUNT=" + Convert.ToString(dataGridView1.ColumnCount));
             writer.WriteLine("TOTALLIFEFORMS=" + Convert.ToString(lifeformlist.Count));
@@ -1085,15 +1096,11 @@ namespace geneticturing
                 }
             }
             writer.Close();
+        }
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveWorld();
 
-
-
-            /*   for (int i = 0; i < lifeformlist.Count; i++)
-            {
-                writer.WriteLine(lifeformlist[i].)
-            }
-                writer.WriteLine("File created using StreamWriter class.");
-            writer.Close(); */
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1401,11 +1408,11 @@ namespace geneticturing
                                 }
                                 else if (propertyname.Equals("TIMEELAPSED"))
                                 {
-                                    time_elapsed = Convert.ToInt32(propertyvalue);
+                                    time_elapsed = Convert.ToDouble(propertyvalue);
                                 }
                                 else if (propertyname.Contains("MOVETOTALS"))
                                 {
-                                    movetotals[Convert.ToInt32(propertyname.Replace("MOVETOTALS", ""))] = Convert.ToInt32(propertyvalue);
+                                    movetotals[Convert.ToInt32(propertyname.Replace("MOVETOTALS", ""))] = Convert.ToDouble(propertyvalue);
                                 }
 
 
@@ -2016,6 +2023,47 @@ namespace geneticturing
                 }
             }
             RefreshWorld();
+        }
+
+        private void autoSaveOffToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!autosaveon)
+            {
+
+                saveFileDialog1.Filter = "World State (*.worldstate)|*.worldstate";
+                saveFileDialog1.ShowDialog();
+                autosave_file = saveFileDialog1.FileName;
+                autosave_interval = Convert.ToDouble(Microsoft.VisualBasic.Interaction.InputBox("Enter Save Interval (at least 10000)", "Enter Save Interval (at least 10000)", "1000000"));
+                autosave_interval_counter = 0;
+                if (autosave_interval < 10000)
+                {
+                    MessageBox.Show("Interval needs to be at least 10000", "Interval needs to at least 10000");
+                    return;
+                }
+                autosaveon = true;
+            }
+            else
+            {
+                autosaveon = false;
+                autosave_file = "";
+                autosave_interval = 0;
+                autosave_interval_counter = 0;
+            }
+
+        }
+
+        private void fileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!autosaveon && (autosave_file != "") && (autosave_interval > 9999))
+                autoSaveOffToolStripMenuItem.Text = "AutoSave Currently Off";
+            else
+            {
+                if (!autosaveon)
+                    autoSaveOffToolStripMenuItem.Text = "AutoSave Currently Off";
+                else
+                    autoSaveOffToolStripMenuItem.Text = "AutoSave Currently On, to " + autosave_file.Replace(".", "(time elapsed here).") + " every " + Convert.ToString(autosave_interval);
+            }
+
         }
     }
 }

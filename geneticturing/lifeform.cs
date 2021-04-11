@@ -152,23 +152,23 @@ abcdefgABCDEFGHIJLMORSTUV;*/
             int tempnumber = 0;
             for (int i = 0; i <= mutation_actions.GetUpperBound(0); i++)
             {
-                if (i == 0)
-                    mutation_actions[i] = has_not_initial_and_no_connections_notfinal();
-                else if (i == 1)
-                    mutation_actions[i] = has_more_than_one_final_state();
-                else if (i == 2)
-                    mutation_actions[i] = has_not_initial_and_no_connections_notfinal(); //remove states have same qualifications as ones that qualify to be a final state
-                else if (i == 3)
+                if (i == 0) //finalize_random_state();
+                    mutation_actions[i] = has_not_initial_and_no_connections_notfinal(); 
+                else if (i == 1) //unfinalize_random_state();
+                    mutation_actions[i] = has_more_than_one_final_state(); 
+                else if (i == 2) //remove_random_state();
+                    mutation_actions[i] = mutation_actions[0]; //remove states have same qualifications as ones that qualify to be a final state
+                else if (i == 3) //add_random_state();
                     mutation_actions[i] = can_add_new_connection();
-                else if (i == 4)
+                else if (i == 4) //modify_random_connection_direction();
                     mutation_actions[i] = one_connection_exists();                  
-                else if (i == 5)
+                else if (i == 5) //modify_random_connection_read();
                     mutation_actions[i] = can_modify_read_of_at_least_one();
-                else if (i == 6)
+                else if (i == 6) //modify_random_connection_write();
                     mutation_actions[i] = mutation_actions[4]; //at least one connection exists
-                else if (i == 7)
-                    mutation_actions[i] = mutation_actions[3]; //read connection available
-                else if (i == 8)
+                else if (i == 7) //remove_random_connection();
+                    mutation_actions[i] = has_a_removable_connection(); //read connection available
+                else if (i == 8) //add_random_connection();
                     mutation_actions[i] = mutation_actions[3]; //read connection available
 
 
@@ -533,7 +533,13 @@ abcdefgABCDEFGHIJLMORSTUV;*/
         }
         public void add_random_state()
         {
-            maxstateid = maxstateid + 1;
+            for (int i = 0; i < turingmachine.turingstates.Count(); i++)
+            {
+
+                if (Convert.ToInt32(turingmachine.turingstates[i].identifier) > maxstateid)
+                    maxstateid = Convert.ToInt32(turingmachine.turingstates[i].identifier);
+            }
+                maxstateid = maxstateid + 1;
             turing_state tempstate = new turing_state(maxstateid);
             tempstate.finalstate = _random.Next(0, 1) == 0;
             int total_available = total_available_states_with_available_new_connections(); //find a state that will connect to it
@@ -585,7 +591,7 @@ abcdefgABCDEFGHIJLMORSTUV;*/
             turing_state_connection connection_to_modify;
             string possiblewritevalues = reservedsymbols;
 
-            which_connection = _random.Next(1, total_available_states_with_removable_connections()); //pick a random state that has connections that can be removed
+            which_connection = _random.Next(1, total_available_states_with_connections()); //pick a random state that has connections that can be removed
             tempstate = return_state_with_connections(which_connection);
             connection_to_modify = tempstate.turingconnections[_random.Next(1, tempstate.turingconnections.Count) - 1];
             possiblewritevalues = "LRS".Replace(connection_to_modify.direction, "");
@@ -598,8 +604,8 @@ abcdefgABCDEFGHIJLMORSTUV;*/
             turing_state tempstate;
             int which_connection = 0;
             string possiblewritevalues = reservedsymbols;
-            which_connection = _random.Next(1, total_available_states_with_available_new_connections_at_least_one());
-            tempstate = return_state_to_add_connection_at_least_one(which_connection);
+            which_connection = _random.Next(1, total_available_states_with_connections());
+            tempstate = return_state_with_connections(which_connection);
             for (int i = 0; i < tempstate.turingconnections.Count; i++)
             {
                 possiblewritevalues.Replace(tempstate.turingconnections[i].readvalue, "");
@@ -619,7 +625,7 @@ abcdefgABCDEFGHIJLMORSTUV;*/
             turing_state_connection connection_to_modify;
             string possiblewritevalues = reservedsymbols;
 
-            which_connection = _random.Next(1, total_available_states_with_removable_connections()); //pick a random state that has connections that can be removed
+            which_connection = _random.Next(1, total_available_states_with_connections()); //pick a random state that has connections that can be removed
             tempstate = return_state_with_connections(which_connection);
             connection_to_modify = tempstate.turingconnections[_random.Next(1, tempstate.turingconnections.Count) - 1];
             possiblewritevalues = possiblewritevalues.Replace(connection_to_modify.writevalue, "");
@@ -704,6 +710,24 @@ abcdefgABCDEFGHIJLMORSTUV;*/
                 }
             }
             return total_qualifying_states;
+
+        }
+
+        public bool has_a_removable_connection() //number of states
+        {
+            for (int i = 0; i < turingmachine.turingstates.Count; i++)
+            {
+                if (turingmachine.turingstates[i].connections_to_here.Count >= 2)
+                    return true;
+                else if (turingmachine.turingstates[i].connections_to_here.Count == 1)
+                {
+                    if (turingmachine.initialstate.Equals(turingmachine.turingstates[i].identifier)) //only one connection that's to itself would be okay to remove if it's an initial state only
+                        return true;
+
+
+                }
+            }
+            return false;
 
         }
         public turing_state return_state_to_remove_connection(int which_connection) //removing a parent connection from the child
@@ -989,12 +1013,11 @@ abcdefgABCDEFGHIJLMORSTUV;*/
             string character_read = "";
             bool connectionfound = true;
             bool finalstatereached = false;
-            bool maxstepsreached = false;
 
             turing_state tempstate = turingmachine.return_state(turingmachine.initialstate);
             while (!finalstatereached && connectionfound && totalsteps <= MAX_TURING_STEPS)
             {
-                while (readerlocation >= tapememory.Length)
+                while (readerlocation > tapememory.Length-1) //was >=
                     tapememory = tapememory + " ";
                 character_read = tapememory.Substring(readerlocation, 1);
                 connectionfound = false;
@@ -1003,9 +1026,16 @@ abcdefgABCDEFGHIJLMORSTUV;*/
                     if (tempconnection.readvalue.Equals(character_read))
                     {
                         connectionfound = true;
-                        tapememory = tapememory.Substring(0, readerlocation) +
-                                    tempconnection.writevalue +
-                                    tapememory.Substring(readerlocation+1);
+                        if (readerlocation + 1 > tapememory.Length)
+                        {
+                            tapememory = tapememory.Substring(0, readerlocation) + tempconnection.writevalue;
+                        }
+                        else
+                        {
+                            tapememory = tapememory.Substring(0, readerlocation) +
+                                        tempconnection.writevalue +
+                                        tapememory.Substring(readerlocation + 1);
+                        }
                         if (tempconnection.direction.Equals("L"))
                             readerlocation--;
                         else if (tempconnection.direction.Equals("R"))

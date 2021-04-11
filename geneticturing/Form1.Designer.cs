@@ -61,7 +61,6 @@
             this.button3 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.squareinfo = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.button5 = new System.Windows.Forms.Button();
@@ -86,6 +85,7 @@
             this.txtWidth = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
+            this.autoSaveOffToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -370,14 +370,6 @@
             this.squareinfo.Size = new System.Drawing.Size(0, 13);
             this.squareinfo.TabIndex = 5;
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(10, 27);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(0, 13);
-            this.label1.TabIndex = 6;
-            // 
             // textBox1
             // 
             this.textBox1.Location = new System.Drawing.Point(556, 46);
@@ -416,10 +408,12 @@
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.saveToolStripMenuItem,
-            this.openToolStripMenuItem});
+            this.openToolStripMenuItem,
+            this.autoSaveOffToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
+            this.fileToolStripMenuItem.Click += new System.EventHandler(this.fileToolStripMenuItem_Click);
             // 
             // saveToolStripMenuItem
             // 
@@ -562,6 +556,13 @@
             this.label4.TabIndex = 14;
             this.label4.Text = "Auto Advance";
             // 
+            // autoSaveOffToolStripMenuItem
+            // 
+            this.autoSaveOffToolStripMenuItem.Name = "autoSaveOffToolStripMenuItem";
+            this.autoSaveOffToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.autoSaveOffToolStripMenuItem.Text = "AutoSave Off";
+            this.autoSaveOffToolStripMenuItem.Click += new System.EventHandler(this.autoSaveOffToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -574,7 +575,6 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.textBox1);
-            this.Controls.Add(this.label1);
             this.Controls.Add(this.squareinfo);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.button3);
@@ -615,7 +615,6 @@
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Label squareinfo;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Button button5;
@@ -662,6 +661,7 @@
         private System.Windows.Forms.ToolStripMenuItem add50RandomFoodToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem add50RandomGlobalMemoryToolStripMenuItem;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ToolStripMenuItem autoSaveOffToolStripMenuItem;
     }
 }
 
