@@ -7,3 +7,12 @@ c:\users\mschm\documents\visual studio 2015\Projects\geneticturing\geneticturing
 c:\users\mschm\documents\visual studio 2015\Projects\geneticturing\geneticturing\obj\Debug\geneticturing.exe
 c:\users\mschm\documents\visual studio 2015\Projects\geneticturing\geneticturing\obj\Debug\geneticturing.pdb
 c:\users\mschm\documents\visual studio 2015\Projects\geneticturing\geneticturing\obj\Debug\geneticturing.csprojResolveAssemblyReference.cache
+C:\Users\mschm\Desktop\genetic_project\GeneticTuring\geneticturing\bin\Debug\geneticturing.exe.config
+C:\Users\mschm\Desktop\genetic_project\GeneticTuring\geneticturing\obj\Debug\geneticturing.exe
+C:\Users\mschm\Desktop\genetic_project\GeneticTuring\geneticturing\obj\Debug\geneticturing.pdb
+C:\Users\mschm\Desktop\genetic_project\GeneticTuring\geneticturing\bin\Debug\geneticturing.exe
+C:\Users\mschm\Desktop\genetic_project\GeneticTuring\geneticturing\bin\Debug\geneticturing.pdb
+C:\Users\mschm\Desktop\genetic_project\GeneticTuring\geneticturing\obj\Debug\geneticturing.Form1.resources
+C:\Users\mschm\Desktop\genetic_project\GeneticTuring\geneticturing\obj\Debug\geneticturing.Properties.Resources.resources
+C:\Users\mschm\Desktop\genetic_project\GeneticTuring\geneticturing\obj\Debug\geneticturing.csproj.GenerateResource.Cache
+C:\Users\mschm\Desktop\genetic_project\GeneticTuring\geneticturing\obj\Debug\geneticturing.csprojResolveAssemblyReference.cache
