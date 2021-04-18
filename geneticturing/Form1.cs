@@ -2065,5 +2065,71 @@ namespace geneticturing
             }
 
         }
+
+        private void saveMachineAsJFLAPToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string filenamehere = "";
+            string filename = "";
+            lifeform templifeform;
+            if (filenamehere == "")
+            {
+                saveFileDialog1.Filter = "JFLAP File (*.jff)|*.jff";
+                saveFileDialog1.ShowDialog();
+                filename = saveFileDialog1.FileName;
+
+            }
+            //((lifeform)theworld.gridobjects[dataGridView1.CurrentCell.ColumnIndex, dataGridView1.CurrentCell.RowIndex]).encode_turing_machine()
+            templifeform = ((lifeform)theworld.gridobjects[dataGridView1.CurrentCell.ColumnIndex, dataGridView1.CurrentCell.RowIndex]);
+            StreamWriter writer = new StreamWriter(filename);
+            writer.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><!--Created with JFLAP 7.1.--><structure>&#13;");
+            writer.WriteLine("	<type>turing</type>&#13;");
+            writer.WriteLine("	<automaton>&#13;");
+            writer.WriteLine("		<!--The list of states.-->&#13;");
+
+
+
+            for (int i = 0; i < templifeform.turingmachine.turingstates.Count; i++)
+            {
+
+                writer.WriteLine("		<state id=\"" + Convert.ToString(templifeform.turingmachine.turingstates[i].identifier) + "\" name=\"" + Convert.ToString(templifeform.turingmachine.turingstates[i].identifier) + "\">&#13;");
+                writer.WriteLine("			<x>" + Convert.ToString((i % 30) * 200) + "</x>&#13;");
+                writer.WriteLine("			<y>" + Math.Floor(i/30.0)*200 + "</y>&#13;");
+                if (templifeform.turingmachine.initialstate == templifeform.turingmachine.turingstates[i].identifier)
+                    writer.WriteLine("			<initial/>&#13;");
+                if (templifeform.turingmachine.turingstates[i].finalstate)
+                    writer.WriteLine("			<final/>&#13;");
+                writer.WriteLine("		</state>&#13;");
+
+
+                //templifeform.turingmachine.turingstates[i].
+
+
+            }
+            writer.WriteLine("		<!--The list of transitions.-->&#13;");
+            for (int i = 0; i < templifeform.turingmachine.turingstates.Count; i++)
+            {
+                if (templifeform.turingmachine.turingstates[i].turingconnections != null)
+                    for (int j = 0; j < templifeform.turingmachine.turingstates[i].turingconnections.Count; j++)
+                    {
+                        writer.WriteLine("		<transition>&#13;");
+                        writer.WriteLine("			<from>" + Convert.ToString(templifeform.turingmachine.turingstates[i].identifier) + "</from>&#13;");
+                        writer.WriteLine("			<to>" + Convert.ToString(templifeform.turingmachine.turingstates[i].turingconnections[j].nextstate) + "</to>&#13;");
+                        writer.WriteLine("			<read>" + Convert.ToString(templifeform.turingmachine.turingstates[i].turingconnections[j].readvalue) + "</read>&#13;");
+                        writer.WriteLine("			<write>" + Convert.ToString(templifeform.turingmachine.turingstates[i].turingconnections[j].writevalue)  + "</write>&#13;");
+                        writer.WriteLine("			<move>" + Convert.ToString(templifeform.turingmachine.turingstates[i].turingconnections[j].direction)  + "</move>&#13;");
+                        writer.WriteLine("		</transition>&#13;");
+
+
+                    }
+
+
+            }
+            writer.WriteLine("	</automaton>&#13;");
+            writer.WriteLine("</structure>");
+
+
+            writer.Close();
+
+        }
     }
 }

@@ -68,6 +68,7 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.autoSaveOffToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.detectionLevelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.populationMaxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -85,7 +86,7 @@
             this.txtWidth = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.autoSaveOffToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveMachineAsJFLAPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -172,9 +173,10 @@
             this.copyMachineToClipboardToolStripMenuItem,
             this.add50RandomStoneToolStripMenuItem,
             this.add50RandomFoodToolStripMenuItem,
-            this.add50RandomGlobalMemoryToolStripMenuItem});
+            this.add50RandomGlobalMemoryToolStripMenuItem,
+            this.saveMachineAsJFLAPToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(272, 290);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(272, 334);
             // 
             // copyToolStripMenuItem
             // 
@@ -429,6 +431,13 @@
             this.openToolStripMenuItem.Text = "Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
+            // autoSaveOffToolStripMenuItem
+            // 
+            this.autoSaveOffToolStripMenuItem.Name = "autoSaveOffToolStripMenuItem";
+            this.autoSaveOffToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.autoSaveOffToolStripMenuItem.Text = "AutoSave Off";
+            this.autoSaveOffToolStripMenuItem.Click += new System.EventHandler(this.autoSaveOffToolStripMenuItem_Click);
+            // 
             // settingsToolStripMenuItem
             // 
             this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -556,12 +565,12 @@
             this.label4.TabIndex = 14;
             this.label4.Text = "Auto Advance";
             // 
-            // autoSaveOffToolStripMenuItem
+            // saveMachineAsJFLAPToolStripMenuItem
             // 
-            this.autoSaveOffToolStripMenuItem.Name = "autoSaveOffToolStripMenuItem";
-            this.autoSaveOffToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.autoSaveOffToolStripMenuItem.Text = "AutoSave Off";
-            this.autoSaveOffToolStripMenuItem.Click += new System.EventHandler(this.autoSaveOffToolStripMenuItem_Click);
+            this.saveMachineAsJFLAPToolStripMenuItem.Name = "saveMachineAsJFLAPToolStripMenuItem";
+            this.saveMachineAsJFLAPToolStripMenuItem.Size = new System.Drawing.Size(271, 22);
+            this.saveMachineAsJFLAPToolStripMenuItem.Text = "Save Machine as JFLAP";
+            this.saveMachineAsJFLAPToolStripMenuItem.Click += new System.EventHandler(this.saveMachineAsJFLAPToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -662,6 +671,7 @@
         private System.Windows.Forms.ToolStripMenuItem add50RandomGlobalMemoryToolStripMenuItem;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ToolStripMenuItem autoSaveOffToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem saveMachineAsJFLAPToolStripMenuItem;
     }
 }
 

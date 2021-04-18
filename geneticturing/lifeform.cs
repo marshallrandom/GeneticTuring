@@ -117,9 +117,9 @@ abcdefgABCDEFGHIJLMORSTUV;*/
             {
                 mutate_turing_machine();
                 ancestral_mutations++;
-                redvalue = _random.Next(0, 255);
-                bluevalue = _random.Next(0, 255);
-                greenvalue = _random.Next(0, 255);
+                redvalue = _random.Next(0, 256);
+                bluevalue = _random.Next(0, 256);
+                greenvalue = _random.Next(0, 256);
                 if (default_mutation_percent >= 100)
                     break; //avoiding infinite loop here
             }
@@ -186,7 +186,7 @@ abcdefgABCDEFGHIJLMORSTUV;*/
             }
             else
             {
-                mutation_picked = _random.Next(0, available_mutation_actions - 1);
+                mutation_picked = _random.Next(0, available_mutation_actions);
 
             }
             tempnumber = 0;
@@ -302,7 +302,7 @@ abcdefgABCDEFGHIJLMORSTUV;*/
             int totaltopickfrom = total_available_states_with_no_connection_isnotfinal();
             if (totaltopickfrom > 0)
             {
-                totaltopickfrom = _random.Next(1, totaltopickfrom);
+                totaltopickfrom = _random.Next(1, totaltopickfrom+1);
                 turing_state tempstate = return_state_with_no_connection_isnotfinal(totaltopickfrom);
                 tempstate.finalstate = true;
             }
@@ -315,7 +315,7 @@ abcdefgABCDEFGHIJLMORSTUV;*/
         {
 
             int totaltopickfrom = total_available_states_with_no_connection_isfinal();
-            totaltopickfrom = _random.Next(1, totaltopickfrom);
+            totaltopickfrom = _random.Next(1, totaltopickfrom+1);
             turing_state tempstate = return_state_with_no_connection_isfinal(totaltopickfrom);
             tempstate.finalstate = false;
 
@@ -325,7 +325,7 @@ abcdefgABCDEFGHIJLMORSTUV;*/
         {
 
             int totaltopickfrom = total_available_states_with_no_connection_isnotfinal();
-            totaltopickfrom = _random.Next(1, totaltopickfrom);
+            totaltopickfrom = _random.Next(1, totaltopickfrom+1);
             remove_state_number_isnotfinal(totaltopickfrom);
 
 
@@ -541,7 +541,7 @@ abcdefgABCDEFGHIJLMORSTUV;*/
             }
                 maxstateid = maxstateid + 1;
             turing_state tempstate = new turing_state(maxstateid);
-            tempstate.finalstate = _random.Next(0, 1) == 0;
+            tempstate.finalstate = _random.Next(0, 2) == 0;
             int total_available = total_available_states_with_available_new_connections(); //find a state that will connect to it
             int which_connection = 0;
 
@@ -552,10 +552,10 @@ abcdefgABCDEFGHIJLMORSTUV;*/
             int connection_state_adding_from = 0;
             string tempsymbols = reservedsymbols;
             turing_state_connection tempconnection;
-            which_connection = _random.Next(1, total_available); //pick a random state that will point to it
+            which_connection = _random.Next(1, total_available+1); //pick a random state that will point to it
             tempstate2 = return_state_to_add_connection(which_connection); //grab the random state that will point to it
             turingmachine.turingstates.Add(tempstate); //add the new state to the machine
-            which_read_character = _random.Next(1, reservedsymbols.Length - tempstate2.turingconnections.Count); //pick a random character that's left to pick from
+            which_read_character = _random.Next(1, reservedsymbols.Length - tempstate2.turingconnections.Count+1); //pick a random character that's left to pick from
             for (int i = 0; i < tempstate2.turingconnections.Count; i++)
             {
                 tempsymbols = tempsymbols.Replace(tempstate2.turingconnections[i].readvalue, "");
@@ -563,8 +563,8 @@ abcdefgABCDEFGHIJLMORSTUV;*/
             } //tempsymbols will store the list of characters left to pick from
             tempconnection = new turing_state_connection();
             tempconnection.readvalue = tempsymbols.Substring(which_read_character-1, 1);
-            tempconnection.writevalue = reservedsymbols.Substring(_random.Next(0, reservedsymbols.Length - 1), 1);
-            whichdirection = _random.Next(1, 3);
+            tempconnection.writevalue = reservedsymbols.Substring(_random.Next(0, reservedsymbols.Length ), 1);
+            whichdirection = _random.Next(1, 4);
             if (whichdirection == 1)
                 tempconnection.direction = "L";
             else if (whichdirection == 2)
@@ -591,11 +591,11 @@ abcdefgABCDEFGHIJLMORSTUV;*/
             turing_state_connection connection_to_modify;
             string possiblewritevalues = reservedsymbols;
 
-            which_connection = _random.Next(1, total_available_states_with_connections()); //pick a random state that has connections that can be removed
+            which_connection = _random.Next(1, total_available_states_with_connections()+1); //pick a random state that has connections that can be removed
             tempstate = return_state_with_connections(which_connection);
-            connection_to_modify = tempstate.turingconnections[_random.Next(1, tempstate.turingconnections.Count) - 1];
+            connection_to_modify = tempstate.turingconnections[_random.Next(1, tempstate.turingconnections.Count+1) - 1];
             possiblewritevalues = "LRS".Replace(connection_to_modify.direction, "");
-            connection_to_modify.direction = possiblewritevalues.Substring(_random.Next(0, possiblewritevalues.Length - 1), 1);
+            connection_to_modify.direction = possiblewritevalues.Substring(_random.Next(0, possiblewritevalues.Length), 1);
 
         }
 
@@ -604,7 +604,7 @@ abcdefgABCDEFGHIJLMORSTUV;*/
             turing_state tempstate;
             int which_connection = 0;
             string possiblewritevalues = reservedsymbols;
-            which_connection = _random.Next(1, total_available_states_with_connections());
+            which_connection = _random.Next(1, total_available_states_with_connections()+1);
             tempstate = return_state_with_connections(which_connection);
             for (int i = 0; i < tempstate.turingconnections.Count; i++)
             {
@@ -612,7 +612,7 @@ abcdefgABCDEFGHIJLMORSTUV;*/
 
 
             }
-            tempstate.turingconnections[_random.Next(0, tempstate.turingconnections.Count-1)].readvalue = possiblewritevalues.Substring(_random.Next(0, possiblewritevalues.Length - 1), 1);
+            tempstate.turingconnections[_random.Next(0, tempstate.turingconnections.Count)].readvalue = possiblewritevalues.Substring(_random.Next(0, possiblewritevalues.Length), 1);
 
 
 
@@ -625,11 +625,11 @@ abcdefgABCDEFGHIJLMORSTUV;*/
             turing_state_connection connection_to_modify;
             string possiblewritevalues = reservedsymbols;
 
-            which_connection = _random.Next(1, total_available_states_with_connections()); //pick a random state that has connections that can be removed
+            which_connection = _random.Next(1, total_available_states_with_connections()+1); //pick a random state that has connections that can be removed
             tempstate = return_state_with_connections(which_connection);
-            connection_to_modify = tempstate.turingconnections[_random.Next(1, tempstate.turingconnections.Count) - 1];
+            connection_to_modify = tempstate.turingconnections[_random.Next(1, tempstate.turingconnections.Count+1) - 1];
             possiblewritevalues = possiblewritevalues.Replace(connection_to_modify.writevalue, "");
-            connection_to_modify.writevalue = possiblewritevalues.Substring(_random.Next(0, possiblewritevalues.Length - 1), 1);
+            connection_to_modify.writevalue = possiblewritevalues.Substring(_random.Next(0, possiblewritevalues.Length), 1);
 
 
 
@@ -672,10 +672,10 @@ abcdefgABCDEFGHIJLMORSTUV;*/
             int connection_state_to_remove = 0;
             int totalconnectionstosamestate = 0;
             turing_state tempstate, tempstate2;
-            which_connection = _random.Next(1, total_available_states_with_removable_connections()); //pick a random state that has connections to it that can be removed
+            which_connection = _random.Next(1, total_available_states_with_removable_connections()+1); //pick a random state that has connections to it that can be removed
             tempstate = return_state_to_remove_connection(which_connection); //returns the state to look at
             connection_state_to_remove = tempstate.identifier;
-            which_connection = _random.Next(0, tempstate.connections_to_here.Count - 1); //pick a random parent connection number to remove
+            which_connection = _random.Next(0, tempstate.connections_to_here.Count); //pick a random parent connection number to remove
             tempstate2 = turingmachine.return_state(tempstate.connections_to_here[which_connection]); //grabbing the parent
             totalconnectionstosamestate = 0;
             tempstate.connections_to_here.RemoveAt(which_connection); //removing parent connection reference
@@ -760,9 +760,9 @@ abcdefgABCDEFGHIJLMORSTUV;*/
             int connection_state_adding_from = 0;
             string tempsymbols = reservedsymbols;
             turing_state_connection tempconnection;
-            which_connection = _random.Next(1, total_available_states_with_available_new_connections());
+            which_connection = _random.Next(1, total_available_states_with_available_new_connections()+1);
             tempstate = return_state_to_add_connection(which_connection);
-            which_read_character = _random.Next(1, reservedsymbols.Length - tempstate.turingconnections.Count);
+            which_read_character = _random.Next(1, reservedsymbols.Length - tempstate.turingconnections.Count + 1);
             for (int i = 0; i < tempstate.turingconnections.Count; i++)
             {
                 tempsymbols = tempsymbols.Replace(tempstate.turingconnections[i].readvalue, "");
@@ -770,15 +770,15 @@ abcdefgABCDEFGHIJLMORSTUV;*/
             }
             tempconnection = new turing_state_connection();
             tempconnection.readvalue = tempsymbols.Substring(which_read_character-1, 1);
-            tempconnection.writevalue = reservedsymbols.Substring(_random.Next(0, reservedsymbols.Length - 1), 1);
-            whichdirection = _random.Next(1, 3);
+            tempconnection.writevalue = reservedsymbols.Substring(_random.Next(0, reservedsymbols.Length), 1);
+            whichdirection = _random.Next(1, 4);
             if (whichdirection == 1)
                 tempconnection.direction = "L";
             else if (whichdirection == 2)
                 tempconnection.direction = "R";
             else if (whichdirection == 3)
                 tempconnection.direction = "S";
-            tempconnection.nextstate = turingmachine.turingstates[_random.Next(0, turingmachine.turingstates.Count - 1)].identifier;
+            tempconnection.nextstate = turingmachine.turingstates[_random.Next(0, turingmachine.turingstates.Count)].identifier;
             connection_state_adding_from = tempstate.identifier;
             tempstate.turingconnections.Add(tempconnection);
             tempstate = turingmachine.return_state(tempconnection.nextstate);
