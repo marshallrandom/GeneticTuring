@@ -246,75 +246,7 @@ namespace geneticturing
             }
 
         }
-        private void Determine_Lifeform_Output(lifeform lifeforminstance)
-        {
-            gridcoordinates tempgridcoordinate = null, tempgridcoordinate2 = null;
-            lifeform templifeform = null;
 
-
-            templifeform = lifeforminstance;
-            tempgridcoordinate = new gridcoordinates(lifeforminstance.x_location, lifeforminstance.y_location);
-            templifeform.outputpending = "";
-            //templifeform.
-            for (int j = 1; j < detectionlevel + 1; j++) //closer things will come first
-            {
-                tempgridcoordinate2 = tempgridcoordinate.translate_coordinates(tempgridcoordinate, j, lifeforminstance.directionfacing, "F", theworld.gridobjects.GetUpperBound(0), theworld.gridobjects.GetUpperBound(1));
-                if (theworld.gridobjects[tempgridcoordinate2.x, tempgridcoordinate2.y] is food)
-                {
-                    for (int k = 0; k < j; k++)
-                    {
-
-                        templifeform.inputpending = templifeform.inputpending + "F";
-                    }
-                    templifeform.inputpending = templifeform.inputpending + ";";
-
-
-                }
-                else if (theworld.gridobjects[tempgridcoordinate2.x, tempgridcoordinate2.y] is lifeform)
-                {
-                    for (int k = 0; k < j; k++)
-                    {
-
-                        templifeform.inputpending = templifeform.inputpending + "U";
-                    }
-                    templifeform.inputpending = templifeform.inputpending + ";";
-
-                }
-                else if (theworld.gridobjects[tempgridcoordinate2.x, tempgridcoordinate2.y] is globalmemoryobject)
-                {
-                    for (int k = 0; k < j; k++)
-                    {
-
-                        templifeform.inputpending = templifeform.inputpending + "H";
-                    }
-                    templifeform.inputpending = templifeform.inputpending + ";";
-
-                }
-                else if (theworld.gridobjects[tempgridcoordinate2.x, tempgridcoordinate2.y] is stoneobject)
-                {
-                    for (int k = 0; k < j; k++)
-                    {
-
-                        templifeform.inputpending = templifeform.inputpending + "O";
-                    }
-                    templifeform.inputpending = templifeform.inputpending + ";";
-
-                }
-            }
-            templifeform.lastinput = templifeform.inputpending;
-            if (templifeform.customoutputpending.Equals(""))
-                templifeform.outputpending = templifeform.evaluate_turing(templifeform.inputpending);  //evaluate the input
-            else
-            {
-                templifeform.outputpending = templifeform.customoutputpending;
-                templifeform.customoutputpending = "";
-            }
-
-            templifeform.lastoutput = templifeform.outputpending;
-            templifeform.inputpending = "";  //done with the input, clearing it out for the next tick
-
-
-        }
         private void evaluate_world()
         {
             time_elapsed++;
@@ -339,13 +271,73 @@ namespace geneticturing
             int numberofkids = 0;
             string firstparameter = "", secondparameter = "";
             Random _random = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
-            Parallel.ForEach(lifeformlist, lifeforminstance => {
-                Determine_Lifeform_Output(lifeforminstance);
 
-        });
+            for (int i = 0; i < lifeformlist.Count; i++)
+            {
+                templifeform = lifeformlist[i];
+                tempgridcoordinate = new gridcoordinates(lifeformlist[i].x_location, lifeformlist[i].y_location);
+                templifeform.outputpending = "";
+                //templifeform.
+                for (int j = 1; j < detectionlevel + 1; j++) //closer things will come first
+                {
+                    tempgridcoordinate2 = tempgridcoordinate.translate_coordinates(tempgridcoordinate, j, lifeformlist[i].directionfacing, "F", theworld.gridobjects.GetUpperBound(0), theworld.gridobjects.GetUpperBound(1));
+                    if (theworld.gridobjects[tempgridcoordinate2.x, tempgridcoordinate2.y] is food)
+                    {
+                        for (int k = 0; k < j; k++)
+                        {
 
-              for (int i = 0; i < lifeformlist.Count; i++)
-           // Parallel.ForEach(lifeformlist, lifeforminstance =>
+                            templifeform.inputpending = templifeform.inputpending + "F";
+                        }
+                        templifeform.inputpending = templifeform.inputpending + ";";
+
+
+                    }
+                    else if (theworld.gridobjects[tempgridcoordinate2.x, tempgridcoordinate2.y] is lifeform)
+                    {
+                        for (int k = 0; k < j; k++)
+                        {
+
+                            templifeform.inputpending = templifeform.inputpending + "U";
+                        }
+                        templifeform.inputpending = templifeform.inputpending + ";";
+
+                    }
+                    else if (theworld.gridobjects[tempgridcoordinate2.x, tempgridcoordinate2.y] is globalmemoryobject)
+                    {
+                        for (int k = 0; k < j; k++)
+                        {
+
+                            templifeform.inputpending = templifeform.inputpending + "H";
+                        }
+                        templifeform.inputpending = templifeform.inputpending + ";";
+
+                    }
+                    else if (theworld.gridobjects[tempgridcoordinate2.x, tempgridcoordinate2.y] is stoneobject)
+                    {
+                        for (int k = 0; k < j; k++)
+                        {
+
+                            templifeform.inputpending = templifeform.inputpending + "O";
+                        }
+                        templifeform.inputpending = templifeform.inputpending + ";";
+
+                    }
+                }
+                templifeform.lastinput = templifeform.inputpending;
+                if (templifeform.customoutputpending.Equals(""))
+                    templifeform.outputpending = templifeform.evaluate_turing(templifeform.inputpending);  //evaluate the input
+                else
+                {
+                    templifeform.outputpending = templifeform.customoutputpending;
+                    templifeform.customoutputpending = "";
+                }
+
+                templifeform.lastoutput = templifeform.outputpending;
+                templifeform.inputpending = "";  //done with the input, clearing it out for the next tick
+
+            }
+            for (int i = 0; i < lifeformlist.Count; i++)
+            // Parallel.ForEach(lifeformlist, lifeforminstance =>
             {
 
                 templifeform = lifeformlist[i];
