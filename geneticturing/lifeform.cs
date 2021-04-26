@@ -608,7 +608,7 @@ abcdefgABCDEFGHIJLMORSTUV;*/
             tempstate = return_state_with_connections(which_connection);
             for (int i = 0; i < tempstate.turingconnections.Count; i++)
             {
-                possiblewritevalues.Replace(tempstate.turingconnections[i].readvalue, "");
+                possiblewritevalues = possiblewritevalues.Replace(tempstate.turingconnections[i].readvalue, "");
 
 
             }
