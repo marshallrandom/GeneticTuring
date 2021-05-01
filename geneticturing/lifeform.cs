@@ -101,6 +101,7 @@ abcdefgABCDEFGHIJLMORSTUV;*/
 
         public lifeform(lifeform objectcopied)
         {
+            bool mutating = false;
             turingmachine = new turing_machine(objectcopied.turingmachine);
             maxstateid = objectcopied.maxstateid;
             //energy = objectcopied.energy;
@@ -113,16 +114,23 @@ abcdefgABCDEFGHIJLMORSTUV;*/
             redvalue = objectcopied.redvalue;
             bluevalue = objectcopied.bluevalue;
             greenvalue = objectcopied.greenvalue;
+            revise_age_of_dead_states();
+
             while (_random.Next(1, 100) <= default_mutation_percent)
             {
+                mutating = true;
+
                 mutate_turing_machine();
                 ancestral_mutations++;
                 redvalue = _random.Next(0, 256);
                 bluevalue = _random.Next(0, 256);
                 greenvalue = _random.Next(0, 256);
+                ClearDeadCodeFlags();
                 if (default_mutation_percent >= 100)
                     break; //avoiding infinite loop here
             }
+            if (!mutating)
+                DeadCodeCleanup();
 
 
 
@@ -132,6 +140,39 @@ abcdefgABCDEFGHIJLMORSTUV;*/
         public lifeform()
         {
             energy = default_start_energy;
+        }
+        public void revise_age_of_dead_states()
+        {
+            for (int i = 0; i < turingmachine.turingstates.Count; i++)
+            {
+                if (!turingmachine.turingstates[i].accessedonce)
+                    turingmachine.turingstates[i].age_since_access++;
+                else
+                {
+                    turingmachine.turingstates[i].age_since_access = 0;
+                    turingmachine.turingstates[i].accessedonce = false;
+                }
+            }
+
+
+        }
+        public void DeadCodeCleanup()
+        {
+            while(remove_unused_state(25)) //keep removing dead states until there aren't any
+            {
+
+            }
+
+
+        }
+        public void ClearDeadCodeFlags()
+        {
+
+            for (int i = 0; i < turingmachine.turingstates.Count; i++)
+            {
+                turingmachine.turingstates[i].accessedonce = false;//safe from being deleted
+                turingmachine.turingstates[i].age_since_access = 0;
+            }
         }
         public void mutate_turing_machine()
         {
@@ -358,7 +399,7 @@ abcdefgABCDEFGHIJLMORSTUV;*/
             turing_state tempstate = null;
             for (int i = 0; i < turingmachine.turingstates.Count; i++)
             {
-                if ((turingmachine.initialstate != turingmachine.turingstates[i].identifier) && !turingmachine.turingstates[i].finalstate)
+                if ((turingmachine.initialstate != turingmachine.turingstates[i].identifier) && (!turingmachine.turingstates[i].finalstate))
                 {
                     if (turingmachine.turingstates[i].turingconnections == null)
                         total_qualifying_states++;
@@ -388,6 +429,47 @@ abcdefgABCDEFGHIJLMORSTUV;*/
                 }
             }
             return;
+
+        }
+
+        public bool remove_unused_state(int max_age) //number of states
+        {
+            int stateremoving = 0;
+            turing_state tempstate = null;
+            bool removable_state = false;
+            for (int i = 0; i < turingmachine.turingstates.Count; i++)
+            {
+                removable_state = false;
+                if ((turingmachine.initialstate != turingmachine.turingstates[i].identifier))
+                {
+                    if (turingmachine.turingstates[i].turingconnections == null)
+                        removable_state = true;
+                    else if (turingmachine.turingstates[i].turingconnections.Count == 0)
+                        removable_state = true;
+                    if (removable_state && !turingmachine.turingstates[i].accessedonce && (turingmachine.turingstates[i].age_since_access >= max_age))
+                    {
+                        //connections_to_here
+                        stateremoving = turingmachine.turingstates[i].identifier;
+                        if (turingmachine.turingstates[i].connections_to_here != null)
+                        {
+                            for (int j = 0; j < turingmachine.turingstates[i].connections_to_here.Count; j++)
+                            {
+                                tempstate = turingmachine.return_state(turingmachine.turingstates[i].connections_to_here[j]);
+                                for (int k = 0; k < tempstate.turingconnections.Count; k++)
+                                {
+                                    if (tempstate.turingconnections[k].nextstate == stateremoving)
+                                        tempstate.turingconnections.RemoveAt(k);
+                                }
+
+
+                            }
+                        }
+                        turingmachine.turingstates.RemoveAt(i);
+                        return true;
+                    }
+                }
+            }
+            return false;
 
         }
         public turing_state return_state_with_no_connection(int which_one) //number of states
@@ -490,7 +572,7 @@ abcdefgABCDEFGHIJLMORSTUV;*/
             int total_qualifying_states = 0;
             for (int i = 0; i < turingmachine.turingstates.Count; i++)
             {
-                if ((turingmachine.initialstate != turingmachine.turingstates[i].identifier) && !turingmachine.turingstates[i].finalstate)
+                if ((turingmachine.initialstate != turingmachine.turingstates[i].identifier) && (!turingmachine.turingstates[i].finalstate))
                 {
                     if (turingmachine.turingstates[i].turingconnections == null)
                         total_qualifying_states++;
@@ -1015,8 +1097,10 @@ abcdefgABCDEFGHIJLMORSTUV;*/
             bool finalstatereached = false;
 
             turing_state tempstate = turingmachine.return_state(turingmachine.initialstate);
+            tempstate.accessedonce = true;
             while (!finalstatereached && connectionfound && totalsteps <= MAX_TURING_STEPS)
             {
+
                 while (readerlocation > tapememory.Length-1) //was >=
                     tapememory = tapememory + " ";
                 character_read = tapememory.Substring(readerlocation, 1);
@@ -1055,6 +1139,7 @@ abcdefgABCDEFGHIJLMORSTUV;*/
 
                         }
                         tempstate = turingmachine.return_state(tempconnection.nextstate);
+                        tempstate.accessedonce = true;
                         finalstatereached = tempstate.finalstate;
                         
                         break;
@@ -1070,6 +1155,7 @@ abcdefgABCDEFGHIJLMORSTUV;*/
 
                 }
             }
+
             returnvalue = tapememory.Substring(readerlocation);
             readerlocation = startlocation;
             tapememory = tapememory.Substring(0, startlocation);
@@ -1198,6 +1284,8 @@ public int ancestral_mutations = 0;*/
         public int identifier;
       //  public turing_state_connection[] turingconnections;
         public bool finalstate = false;
+        public bool accessedonce = false;
+        public double age_since_access = 0;
         public List<int> connections_to_here;
         public List<turing_state_connection> turingconnections;
         public string Data_Save()
@@ -1240,14 +1328,17 @@ public int ancestral_mutations = 0;*/
             identifier = namehere;
             turingconnections = new List<turing_state_connection>();
             connections_to_here = new List<int>();
+            accessedonce = false;
+            age_since_access = 0;
 
-
-        }
+    }
 
         public turing_state(turing_state objectcopied)
         {
             identifier = objectcopied.identifier;
             finalstate = objectcopied.finalstate;
+            age_since_access = objectcopied.age_since_access;
+            accessedonce = objectcopied.accessedonce;
             connections_to_here = new List<int>();
             for (int i = 0; i < objectcopied.connections_to_here.Count(); i++)
             {
