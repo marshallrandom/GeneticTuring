@@ -15,4 +15,3 @@ C:\Users\mschm\Desktop\genetic_project\GeneticTuring\geneticturing\bin\Debug\gen
 C:\Users\mschm\Desktop\genetic_project\GeneticTuring\geneticturing\obj\Debug\geneticturing.Form1.resources
 C:\Users\mschm\Desktop\genetic_project\GeneticTuring\geneticturing\obj\Debug\geneticturing.Properties.Resources.resources
 C:\Users\mschm\Desktop\genetic_project\GeneticTuring\geneticturing\obj\Debug\geneticturing.csproj.GenerateResource.Cache
-C:\Users\mschm\Desktop\genetic_project\GeneticTuring\geneticturing\obj\Debug\geneticturing.csprojResolveAssemblyReference.cache

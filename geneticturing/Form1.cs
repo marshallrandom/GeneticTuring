@@ -777,6 +777,8 @@ namespace geneticturing
                             }
                             templifeform.energy -= 2;
                         }
+                        else
+                            templifeform.energy -= 1;
 
 
                     }
